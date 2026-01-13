@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BD Remittance Calculator | Premium Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #0F172A;
+            --panel-bg: #1E293B;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #E5E7EB;
+            --text-muted: #94a3b8;
+            --accent: #10b981;
+            --blob-color-1: rgba(99, 102, 241, 0.1);
+            --blob-color-2: rgba(16, 185, 129, 0.08);
+            --blob-color-3: rgba(139, 92, 246, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Blobs */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(80px);
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            animation: move linear infinite;
+        }
+
+        .blob-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--blob-color-1);
+            top: -10%;
+            left: -10%;
+            animation-duration: 25s;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--blob-color-2);
+            bottom: -10%;
+            right: -10%;
+            animation-duration: 30s;
+            animation-direction: reverse;
+        }
+
+        .blob-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--blob-color-3);
+            top: 40%;
+            left: 50%;
+            animation-duration: 20s;
+        }
+
+        @keyframes move {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(10vw, 20vh) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-5vw, 15vh) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        /* Grain texture overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Decorative blobs */
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            filter: blur(120px);
+            opacity: 0.15;
+            border-radius: 50%;
+            z-index: -1;
+            animation: move 20s infinite alternate;
+        }
+
+        .blob-1 {
+            top: -100px;
+            left: -100px;
+        }
+
+        .blob-2 {
+            bottom: -100px;
+            right: -100px;
+            background: var(--accent);
+        }
+
+        @keyframes move {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(100px, 100px);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-group input:focus+label {
+            color: var(--primary);
+        }
+
+        /* Remove number spinners */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--panel-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--glass-border);
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--accent);
+            font-size: 2rem;
+        }
+
+        .modal h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .result-value small {
+            font-size: 0.875rem;
+            font-weight: 400;
+            margin-left: 0.25rem;
+            color: var(--text-muted);
+        }
+
+        .close-btn {
+            margin-top: 1.5rem;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: none;
+        }
+
+        .incentive-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="container">
+        <h2>Remit BD</h2>
+        <p class="subtitle">Securely calculate your transfer with government incentives.</p>
+
+        <div class="input-group">
+            <label for="amount">Target amount (TK)</label>
+            <input type="number" id="amount" placeholder="e.g. 10000" step="any">
+        </div>
+
+        <div class="input-group">
+            <label for="rate">Exchange Rate (1 LEU = ? TK)</label>
+            <input type="number" id="rate" placeholder="e.g. 25.5" step="any">
+        </div>
+
+        <button onclick="calculate()">Process Calculation</button>
+        <div style="text-align: center;">
+            <span class="incentive-tag">Includes 2.5% Gov Incentive</span>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-icon">✓</div>
+            <h3>Calculation Complete</h3>
+
+            <div class="result-item">
+                <span class="result-label">Base Amount (Before Incentive)</span>
+                <span class="result-value" id="resBase">0.00 <small>TK</small></span>
+            </div>
+
+            <div class="result-item"
+                style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.3);">
+                <span class="result-label" style="color: var(--accent);">Government Incentive (+2.5%)</span>
+                <span class="result-value" style="color: var(--accent);" id="resIncentive">0.00 <small>TK</small></span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Final Amount Received in BD</span>
+                <span class="result-value" id="resBd">0.00 <small>TK</small></span>
+            </div>
+
+            <div class="result-item" style="position: relative;">
+                <span class="result-label">Amount you pay in LEU</span>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                    <span class="result-value" id="resLeu">0.00 <small>LEU</small></span>
+                    <button id="copyBtn" onclick="copyLeu()"
+                        style="width: auto; padding: 0.5rem 1rem; margin-top: 0; font-size: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: none;">
+                        Copy
+                    </button>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal()">Back to Calculator</button>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const amountInput = document.getElementById('amount');
+            const rateInput = document.getElementById('rate');
+
+            const moneyAmount = parseFloat(amountInput.value);
+            const exchangeRate = parseFloat(rateInput.value);
+
+            if (isNaN(moneyAmount) || isNaN(exchangeRate) || moneyAmount <= 0 || exchangeRate <= 0) {
+                alert("Please enter valid positive numbers for both fields.");
+                return;
+            }
+
+            // Based on user original logic:
+            // recipients gets moneyAmount
+            // base amount is bdAmount = moneyAmount * 100 / 102.5
+            // leu required is bdAmount / exchangeRate
+
+            const bdAmountBase = (moneyAmount * 100) / 102.5;
+            const incentive = moneyAmount - bdAmountBase;
+            const leuAmount = bdAmountBase / exchangeRate;
+
+            // Update UI
+            document.getElementById('resBase').innerHTML = `${bdAmountBase.toFixed(2)} <small>TK</small>`;
+            document.getElementById('resIncentive').innerHTML = `${incentive.toFixed(2)} <small>TK</small>`;
+            document.getElementById('resBd').innerHTML = `${moneyAmount.toFixed(2)} <small>TK</small>`;
+            document.getElementById('resLeu').innerHTML = `${leuAmount.toFixed(2)} <small>LEU</small>`;
+
+            // Show Modal
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "Copy";
+            btn.style.background = "rgba(255,255,255,0.05)";
+        }
+
+        function copyLeu() {
+            const leuValue = document.getElementById('resLeu').innerText.split(' ')[0];
+            navigator.clipboard.writeText(leuValue).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerText = "Copied!";
+                btn.style.background = "var(--accent)";
+                setTimeout(() => {
+                    btn.innerText = "Copy";
+                    btn.style.background = "rgba(255,255,255,0.05)";
+                }, 2000);
+            });
+        }
+
+        // Close on escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+
+</html>
