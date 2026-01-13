@@ -386,12 +386,12 @@
 
         <div class="input-group">
             <label for="amount">Target amount (TK)</label>
-            <input type="number" id="amount" placeholder="e.g. 10000" step="any">
+            <input type="text" id="amount" placeholder="e.g. 10000" inputmode="decimal">
         </div>
 
         <div class="input-group">
             <label for="rate">Exchange Rate (1 LEU = ? TK)</label>
-            <input type="number" id="rate" placeholder="e.g. 25.5" step="any">
+            <input type="text" id="rate" placeholder="e.g. 25.5" inputmode="decimal">
         </div>
 
         <button onclick="calculate()">Process Calculation</button>
@@ -442,8 +442,9 @@
             const amountInput = document.getElementById('amount');
             const rateInput = document.getElementById('rate');
 
-            const moneyAmount = parseFloat(amountInput.value);
-            const exchangeRate = parseFloat(rateInput.value);
+            // Normalize input: replace comma with dot for calculation
+            const moneyAmount = parseFloat(amountInput.value.replace(',', '.'));
+            const exchangeRate = parseFloat(rateInput.value.replace(',', '.'));
 
             if (isNaN(moneyAmount) || isNaN(exchangeRate) || moneyAmount <= 0 || exchangeRate <= 0) {
                 alert("Please enter valid positive numbers for both fields.");
