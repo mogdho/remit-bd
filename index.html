@@ -442,9 +442,15 @@
             const amountInput = document.getElementById('amount');
             const rateInput = document.getElementById('rate');
 
-            // Normalize input: replace comma with dot for calculation
-            const moneyAmount = parseFloat(amountInput.value.replace(',', '.'));
-            const exchangeRate = parseFloat(rateInput.value.replace(',', '.'));
+            const parseValue = (val) => {
+                if (!val) return NaN;
+                // Trim whitespace and replace all commas with dots
+                const normalized = val.trim().replace(/,/g, '.');
+                return parseFloat(normalized);
+            };
+
+            const moneyAmount = parseValue(amountInput.value);
+            const exchangeRate = parseValue(rateInput.value);
 
             if (isNaN(moneyAmount) || isNaN(exchangeRate) || moneyAmount <= 0 || exchangeRate <= 0) {
                 alert("Please enter valid positive numbers for both fields.");
