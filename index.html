@@ -35,8 +35,10 @@
             justify-content: center;
             background: var(--bg-color);
             color: var(--text-main);
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             position: relative;
+            padding: 2rem 1rem;
         }
 
         /* Animated Background Blobs */
@@ -153,6 +155,7 @@
         .container {
             width: 100%;
             max-width: 450px;
+            margin: auto;
             padding: 2rem;
             background: var(--panel-bg);
             border: 1px solid var(--glass-border);
@@ -532,7 +535,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                 <label for="amount" id="amount-label" style="margin-bottom: 0;">Target amount (TK)</label>
                 <button type="button" class="toggle-btn" onclick="toggleMode()" title="Switch Calculation Mode">
-                    🔁 Switch
+                    <img src="swap.png" alt="Swap" style="width: 14px; height: 14px; object-fit: contain;"> Switch
                 </button>
             </div>
             <input type="text" id="amount" placeholder="e.g. 10000" inputmode="decimal">
