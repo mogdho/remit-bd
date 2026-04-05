@@ -21,4 +21,4 @@ A premium, fast, and open-source UI Calculator designed to calculate Romanian Le
 Since this is a static repository, no complex build tools are required.
 1. Clone the repository: 
    ```bash
-   git clone [https://github.com/mogdho/remit-bd.git](https://github.com/mogdho/remit-bd.git)
+   git clone https://github.com/mogdho/remit-bd.git
