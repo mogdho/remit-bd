@@ -236,6 +236,7 @@
 
         input[type=number] {
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         button {
@@ -371,6 +372,149 @@
             font-weight: 600;
             margin-top: 0.5rem;
         }
+
+        /* Rate Indicator */
+        .rate-indicator {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            min-height: 1rem;
+            transition: color 0.3s;
+        }
+
+        /* Pre-calculation Cards */
+        .precalc-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .precalc-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .precalc-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .precalc-amount {
+            font-weight: 600;
+            color: white;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .precalc-req {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Remitly Banner */
+        .remitly-banner {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(16, 185, 129, 0.04));
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .remitly-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('remitly.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.02;
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
+
+        .remitly-logo {
+            width: auto;
+            height: 28px;
+            margin-bottom: 1rem;
+            z-index: 1;
+        }
+
+        .remitly-text {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            z-index: 1;
+        }
+
+        .remitly-text strong {
+            color: white;
+        }
+
+        .remitly-cta {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            z-index: 1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .remitly-cta:hover {
+            background: white;
+            color: var(--bg-color);
+            transform: translateY(-1px);
+        }
+
+        .toggle-btn {
+            width: auto;
+            margin-top: 0;
+            padding: 0.3rem 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 8px;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+            box-shadow: none;
+            border-color: var(--primary);
+        }
     </style>
 </head>
 
@@ -385,7 +529,12 @@
         <p class="subtitle">Securely calculate your transfer with government incentives.</p>
 
         <div class="input-group">
-            <label for="amount">Target amount (TK)</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label for="amount" id="amount-label" style="margin-bottom: 0;">Target amount (TK)</label>
+                <button type="button" class="toggle-btn" onclick="toggleMode()" title="Switch Calculation Mode">
+                    🔁 Switch
+                </button>
+            </div>
             <input type="text" id="amount" placeholder="e.g. 10000" inputmode="decimal">
         </div>
 
@@ -393,10 +542,35 @@
             <label for="rate">Exchange Rate (1 LEU = ? TK)</label>
             <input type="text" id="rate" placeholder="e.g. 25.5" inputmode="decimal">
         </div>
+        <div id="rate-indicator" class="rate-indicator">Fetching live rate...</div>
 
         <button onclick="calculate()">Process Calculation</button>
         <div style="text-align: center;">
             <span class="incentive-tag">Includes 2.5% Gov Incentive</span>
+        </div>
+
+        <div class="precalc-cards">
+            <div class="precalc-card" onclick="copyPrecalc(this)">
+                <div class="precalc-amount" id="precalc-amt-1">10,000 TK</div>
+                <div class="precalc-req" id="precalc-req-1">... LEU</div>
+            </div>
+            <div class="precalc-card" onclick="copyPrecalc(this)">
+                <div class="precalc-amount" id="precalc-amt-2">20,000 TK</div>
+                <div class="precalc-req" id="precalc-req-2">... LEU</div>
+            </div>
+            <div class="precalc-card" onclick="copyPrecalc(this)">
+                <div class="precalc-amount" id="precalc-amt-3">50,000 TK</div>
+                <div class="precalc-req" id="precalc-req-3">... LEU</div>
+            </div>
+        </div>
+
+        <div class="remitly-banner">
+            <img src="remitly.png" alt="Remitly Logo" class="remitly-logo">
+            <div class="remitly-text">
+                Sign up for Remitly using my referral link to get <strong>50 RON off</strong> on your first money
+                transfer of 500 RON or more.
+            </div>
+            <a href="https://remit.ly/2n0wkpg8" target="_blank" class="remitly-cta">Get 50 RON Off</a>
         </div>
     </div>
 
@@ -438,6 +612,98 @@
     </div>
 
     <script>
+        let isReverseMode = false;
+        let manualRateSet = false;
+        const precalcAmountsTk = [10000, 20000, 50000];
+        const precalcAmountsLeu = [100, 400, 1000];
+
+        function toggleMode() {
+            isReverseMode = !isReverseMode;
+            const label = document.getElementById('amount-label');
+            const input = document.getElementById('amount');
+
+            if (isReverseMode) {
+                label.textContent = "Send amount (LEU)";
+                input.placeholder = "e.g. 1000";
+            } else {
+                label.textContent = "Target amount (TK)";
+                input.placeholder = "e.g. 10000";
+            }
+
+            const rateInput = document.getElementById('rate');
+            if (rateInput.value) {
+                updatePrecalcCards(rateInput.value);
+            }
+        }
+
+        async function fetchExchangeRate() {
+            const indicator = document.getElementById('rate-indicator');
+            const rateInput = document.getElementById('rate');
+
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/RON');
+                if (!response.ok) throw new Error('API error');
+
+                const data = await response.json();
+                const rate = data.rates.BDT;
+
+                if (rate) {
+                    if (!manualRateSet) {
+                        rateInput.value = rate.toFixed(2);
+                        indicator.textContent = "Live rate fetched automatically";
+                        indicator.style.color = "var(--accent)";
+                        updatePrecalcCards(rate);
+                    }
+                } else {
+                    throw new Error("BDT rate not found");
+                }
+            } catch (error) {
+                if (!manualRateSet) {
+                    indicator.textContent = "Failed to fetch live rate, please enter manually";
+                    indicator.style.color = "#ef4444";
+                }
+            }
+        }
+
+        function updatePrecalcCards(rate) {
+            const parsedRate = parseFloat(rate);
+            if (isNaN(parsedRate) || parsedRate <= 0) {
+                document.getElementById('precalc-req-1').textContent = "...";
+                document.getElementById('precalc-req-2').textContent = "...";
+                document.getElementById('precalc-req-3').textContent = "...";
+                return;
+            }
+
+            if (!isReverseMode) {
+                precalcAmountsTk.forEach((amount, index) => {
+                    const bdAmountBase = (amount * 100) / 102.5;
+                    const leuAmount = bdAmountBase / parsedRate;
+                    document.getElementById(`precalc-amt-${index + 1}`).textContent = `${amount.toLocaleString()} TK`;
+                    document.getElementById(`precalc-req-${index + 1}`).textContent = `${leuAmount.toFixed(2)} LEU`;
+                });
+            } else {
+                precalcAmountsLeu.forEach((amount, index) => {
+                    const bdAmountBase = amount * parsedRate;
+                    const bdAmountTotal = bdAmountBase * 1.025;
+                    document.getElementById(`precalc-amt-${index + 1}`).textContent = `${amount.toLocaleString()} LEU`;
+                    document.getElementById(`precalc-req-${index + 1}`).textContent = `${bdAmountTotal.toFixed(2)} TK`;
+                });
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchExchangeRate();
+
+            document.getElementById('rate').addEventListener('input', (e) => {
+                manualRateSet = true;
+                const val = e.target.value.replace(/,/g, '.');
+                updatePrecalcCards(val);
+                const indicator = document.getElementById('rate-indicator');
+                indicator.textContent = "Manual rate applied";
+                indicator.style.color = "white";
+            });
+        });
+
         function calculate() {
             const amountInput = document.getElementById('amount');
             const rateInput = document.getElementById('rate');
@@ -449,27 +715,34 @@
                 return parseFloat(normalized);
             };
 
-            const moneyAmount = parseValue(amountInput.value);
+            const inputValue = parseValue(amountInput.value);
             const exchangeRate = parseValue(rateInput.value);
 
-            if (isNaN(moneyAmount) || isNaN(exchangeRate) || moneyAmount <= 0 || exchangeRate <= 0) {
+            if (isNaN(inputValue) || isNaN(exchangeRate) || inputValue <= 0 || exchangeRate <= 0) {
                 alert("Please enter valid positive numbers for both fields.");
                 return;
             }
 
-            // Based on user original logic:
-            // recipients gets moneyAmount
-            // base amount is bdAmount = moneyAmount * 100 / 102.5
-            // leu required is bdAmount / exchangeRate
+            let bdAmountBase, incentive, moneyAmountTk, leuAmount;
 
-            const bdAmountBase = (moneyAmount * 100) / 102.5;
-            const incentive = moneyAmount - bdAmountBase;
-            const leuAmount = bdAmountBase / exchangeRate;
+            if (!isReverseMode) {
+                // Mode 1: Input is Target TK
+                moneyAmountTk = inputValue;
+                bdAmountBase = (moneyAmountTk * 100) / 102.5;
+                incentive = moneyAmountTk - bdAmountBase;
+                leuAmount = bdAmountBase / exchangeRate;
+            } else {
+                // Mode 2: Input is Send LEU
+                leuAmount = inputValue;
+                bdAmountBase = leuAmount * exchangeRate;
+                moneyAmountTk = bdAmountBase * 1.025;
+                incentive = moneyAmountTk - bdAmountBase;
+            }
 
             // Update UI
             document.getElementById('resBase').innerHTML = `${bdAmountBase.toFixed(2)} <small>TK</small>`;
             document.getElementById('resIncentive').innerHTML = `${incentive.toFixed(2)} <small>TK</small>`;
-            document.getElementById('resBd').innerHTML = `${moneyAmount.toFixed(2)} <small>TK</small>`;
+            document.getElementById('resBd').innerHTML = `${moneyAmountTk.toFixed(2)} <small>TK</small>`;
             document.getElementById('resLeu').innerHTML = `${leuAmount.toFixed(2)} <small>LEU</small>`;
 
             // Show Modal
@@ -494,6 +767,22 @@
                     btn.style.background = "rgba(255,255,255,0.05)";
                 }, 2000);
             });
+        }
+
+        function copyPrecalc(element) {
+            const reqDiv = element.querySelector('.precalc-req');
+            const value = reqDiv.textContent.split(' ')[0];
+            if (value && value !== "...") {
+                navigator.clipboard.writeText(value).then(() => {
+                    const originalText = reqDiv.textContent;
+                    reqDiv.textContent = "Copied!";
+                    reqDiv.style.color = "white";
+                    setTimeout(() => {
+                        reqDiv.textContent = originalText;
+                        reqDiv.style.color = "var(--accent)";
+                    }, 1500);
+                });
+            }
         }
 
         // Close on escape key
