@@ -26,3 +26,10 @@ Since this is a static repository, no complex build tools are required.
 
 ```bash
 git clone [https://github.com/mogdho/remit-bd.git](https://github.com/mogdho/remit-bd.git)
+```
+
+
+---
+
+### 👨‍💻 Author
+**Mogdho Paul**  
