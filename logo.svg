@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Remit BD">
+  <defs>
+    <!-- userSpaceOnUse so shapes filled with it blend seamlessly into the tile -->
+    <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <g transform="translate(8 8) scale(0.75)" fill="none" stroke="#fff" stroke-width="3.5"
+     stroke-linecap="round" stroke-linejoin="round">
+    <!-- phone -->
+    <rect x="15" y="4" width="30" height="56" rx="6"/>
+    <path d="M15 12h30M15 52h30"/>
+    <!-- send arrow -->
+    <path d="M21 19h7v-4l8 7-8 7v-4h-7z"/>
+    <!-- globe -->
+    <circle cx="46" cy="29" r="13" fill="url(#g)"/>
+    <ellipse cx="46" cy="29" rx="5.5" ry="13"/>
+    <path d="M33 29h26M35.5 21.5h21M35.5 36.5h21"/>
+    <!-- banknote with taka sign -->
+    <rect x="2" y="35" width="32" height="18" rx="2" fill="url(#g)"/>
+    <rect x="6" y="39" width="24" height="10" rx="1"/>
+  </g>
+  <!-- centered on the note's inner frame -->
+  <text x="21.5" y="43.6" text-anchor="middle" font-family="'Nirmala UI','Noto Sans Bengali','Kohinoor Bangla',sans-serif"
+        font-size="7" font-weight="700" fill="#fff">৳</text>
+</svg>
