@@ -16,9 +16,8 @@
             --text-main: #E5E7EB;
             --text-muted: #94a3b8;
             --accent: #10b981;
-            --blob-color-1: rgba(99, 102, 241, 0.1);
-            --blob-color-2: rgba(16, 185, 129, 0.08);
-            --blob-color-3: rgba(139, 92, 246, 0.08);
+            --accent-soft: rgba(16, 185, 129, 0.15);
+            --danger: #ef4444;
         }
 
         * {
@@ -41,84 +40,25 @@
             padding: 2rem 1rem;
         }
 
-        /* Animated Background Blobs */
-        .bg-blobs {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            filter: blur(80px);
-        }
-
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            animation: move linear infinite;
-        }
-
-        .blob-1 {
-            width: 600px;
-            height: 600px;
-            background: var(--blob-color-1);
-            top: -10%;
-            left: -10%;
-            animation-duration: 25s;
-        }
-
-        .blob-2 {
-            width: 500px;
-            height: 500px;
-            background: var(--blob-color-2);
-            bottom: -10%;
-            right: -10%;
-            animation-duration: 30s;
-            animation-direction: reverse;
-        }
-
-        .blob-3 {
-            width: 400px;
-            height: 400px;
-            background: var(--blob-color-3);
-            top: 40%;
-            left: 50%;
-            animation-duration: 20s;
-        }
-
-        @keyframes move {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(10vw, 20vh) scale(1.1);
-            }
-
-            66% {
-                transform: translate(-5vw, 15vh) scale(0.9);
-            }
-
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-        }
-
         /* Grain texture overlay */
         body::before {
             content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             opacity: 0.03;
             pointer-events: none;
             z-index: 10;
         }
 
-        /* Decorative blobs */
+        /* Animated background blobs */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            filter: blur(80px);
+        }
+
         .blob {
             position: absolute;
             width: 500px;
@@ -127,7 +67,6 @@
             filter: blur(120px);
             opacity: 0.15;
             border-radius: 50%;
-            z-index: -1;
             animation: move 20s infinite alternate;
         }
 
@@ -140,6 +79,11 @@
             bottom: -100px;
             right: -100px;
             background: var(--accent);
+        }
+
+        .blob-3 {
+            top: 40%;
+            left: 50%;
         }
 
         @keyframes move {
@@ -187,13 +131,14 @@
             -webkit-text-fill-color: transparent;
         }
 
-        p.subtitle {
+        .subtitle {
             text-align: center;
             color: var(--text-muted);
             font-size: 0.875rem;
             margin-bottom: 2rem;
         }
 
+        /* Form fields */
         .input-group {
             margin-bottom: 1.5rem;
         }
@@ -204,10 +149,21 @@
             font-weight: 500;
             color: var(--text-muted);
             margin-bottom: 0.5rem;
-            transition: color 0.3s;
         }
 
-        .input-group input {
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .label-row label {
+            margin-bottom: 0;
+        }
+
+        .input-group input,
+        .input-group select {
             width: 100%;
             padding: 1rem;
             background: rgba(0, 0, 0, 0.2);
@@ -219,29 +175,44 @@
             outline: none;
         }
 
-        .input-group input:focus {
+        .input-group select {
+            cursor: pointer;
+        }
+
+        .input-group select option {
+            background: var(--panel-bg);
+            color: white;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
             border-color: var(--primary);
             background: rgba(0, 0, 0, 0.3);
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
-        .input-group input:focus+label {
-            color: var(--primary);
+        .rate-indicator {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            min-height: 1rem;
+            transition: color 0.3s;
         }
 
-        /* Remove number spinners */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            appearance: none;
-            margin: 0;
+        .rate-indicator.live {
+            color: var(--accent);
         }
 
-        input[type=number] {
-            -moz-appearance: textfield;
-            appearance: textfield;
+        .rate-indicator.manual {
+            color: white;
         }
 
+        .rate-indicator.error {
+            color: var(--danger);
+        }
+
+        /* Buttons */
         button {
             width: 100%;
             padding: 1rem;
@@ -267,13 +238,95 @@
             transform: translateY(0);
         }
 
-        /* Modal Styles */
+        .toggle-btn {
+            width: auto;
+            margin-top: 0;
+            padding: 0.3rem 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 8px;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-main);
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+            box-shadow: none;
+            border-color: var(--primary);
+        }
+
+        .toggle-btn img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+        }
+
+        .incentive-row {
+            text-align: center;
+        }
+
+        .incentive-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* Quick calculation cards */
+        .precalc-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .precalc-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .precalc-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .precalc-amount {
+            font-weight: 600;
+            color: white;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .precalc-req {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .precalc-req.copied {
+            color: white;
+        }
+
+        /* Results modal */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
             display: flex;
@@ -331,6 +384,11 @@
             border-radius: 12px;
         }
 
+        .result-item.incentive {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px dashed rgba(16, 185, 129, 0.3);
+        }
+
         .result-label {
             font-size: 0.75rem;
             color: var(--text-muted);
@@ -346,11 +404,37 @@
             color: white;
         }
 
+        .result-item.incentive .result-label,
+        .result-item.incentive .result-value {
+            color: var(--accent);
+        }
+
         .result-value small {
             font-size: 0.875rem;
             font-weight: 400;
             margin-left: 0.25rem;
             color: var(--text-muted);
+        }
+
+        .result-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .copy-btn {
+            width: auto;
+            padding: 0.5rem 1rem;
+            margin-top: 0;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+        }
+
+        .copy-btn.copied {
+            background: var(--accent);
         }
 
         .close-btn {
@@ -364,160 +448,6 @@
             background: rgba(255, 255, 255, 0.05);
             box-shadow: none;
         }
-
-        .incentive-tag {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent);
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
-        /* Rate Indicator */
-        .rate-indicator {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: -1rem;
-            margin-bottom: 1.5rem;
-            min-height: 1rem;
-            transition: color 0.3s;
-        }
-
-        /* Pre-calculation Cards */
-        .precalc-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-            margin-top: 2rem;
-        }
-
-        .precalc-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 0.75rem;
-            text-align: center;
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .precalc-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .precalc-amount {
-            font-weight: 600;
-            color: white;
-            font-size: 0.8rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .precalc-req {
-            font-size: 0.75rem;
-            color: var(--accent);
-            font-weight: 500;
-        }
-
-        /* Remitly Banner */
-        .remitly-banner {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(16, 185, 129, 0.04));
-            border: 1px solid rgba(99, 102, 241, 0.15);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .remitly-banner::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('remitly.png') no-repeat center center;
-            background-size: cover;
-            opacity: 0.02;
-            pointer-events: none;
-            filter: grayscale(100%);
-        }
-
-        .remitly-logo {
-            width: auto;
-            height: 28px;
-            margin-bottom: 1rem;
-            z-index: 1;
-        }
-
-        .remitly-text {
-            font-size: 0.875rem;
-            line-height: 1.5;
-            color: var(--text-main);
-            margin-bottom: 1.25rem;
-            z-index: 1;
-        }
-
-        .remitly-text strong {
-            color: white;
-        }
-
-        .remitly-cta {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 999px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s;
-            z-index: 1;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .remitly-cta:hover {
-            background: white;
-            color: var(--bg-color);
-            transform: translateY(-1px);
-        }
-
-        .toggle-btn {
-            width: auto;
-            margin-top: 0;
-            padding: 0.3rem 0.6rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            font-size: 0.75rem;
-            font-weight: 500;
-            border-radius: 8px;
-            box-shadow: none;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.3s;
-            outline: none;
-        }
-
-        .toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
-            box-shadow: none;
-            border-color: var(--primary);
-        }
     </style>
 </head>
 
@@ -527,86 +457,79 @@
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
+
     <div class="container">
         <h2>Remit BD</h2>
-        <p class="subtitle">Securely calculate your transfer with government incentives.</p>
+        <p class="subtitle">Calculate money sent to Bangladesh from any currency, with government incentives.</p>
 
         <div class="input-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <label for="amount" id="amount-label" style="margin-bottom: 0;">Target amount (TK)</label>
+            <label for="currency">Send currency</label>
+            <select id="currency" onchange="onCurrencyChange()"></select>
+        </div>
+
+        <div class="input-group">
+            <div class="label-row">
+                <label for="amount" id="amount-label">Target amount (TK)</label>
                 <button type="button" class="toggle-btn" onclick="toggleMode()" title="Switch Calculation Mode">
-                    <img src="swap.png" alt="Swap" style="width: 14px; height: 14px; object-fit: contain;"> Switch
+                    <img src="swap.png" alt=""> Switch
                 </button>
             </div>
             <input type="text" id="amount" placeholder="e.g. 10000" inputmode="decimal">
         </div>
 
         <div class="input-group">
-            <label for="rate">Exchange Rate (1 LEU = ? TK)</label>
+            <label for="rate" id="rate-label">Exchange Rate (1 RON = ? TK)</label>
             <input type="text" id="rate" placeholder="e.g. 25.5" inputmode="decimal">
         </div>
         <div id="rate-indicator" class="rate-indicator">Fetching live rate...</div>
 
         <button onclick="calculate()">Process Calculation</button>
-        <div style="text-align: center;">
+        <div class="incentive-row">
             <span class="incentive-tag">Includes 2.5% Gov Incentive</span>
         </div>
 
         <div class="precalc-cards">
             <div class="precalc-card" onclick="copyPrecalc(this)">
-                <div class="precalc-amount" id="precalc-amt-1">10,000 TK</div>
-                <div class="precalc-req" id="precalc-req-1">... LEU</div>
+                <div class="precalc-amount">10,000 TK</div>
+                <div class="precalc-req">...</div>
             </div>
             <div class="precalc-card" onclick="copyPrecalc(this)">
-                <div class="precalc-amount" id="precalc-amt-2">20,000 TK</div>
-                <div class="precalc-req" id="precalc-req-2">... LEU</div>
+                <div class="precalc-amount">20,000 TK</div>
+                <div class="precalc-req">...</div>
             </div>
             <div class="precalc-card" onclick="copyPrecalc(this)">
-                <div class="precalc-amount" id="precalc-amt-3">50,000 TK</div>
-                <div class="precalc-req" id="precalc-req-3">... LEU</div>
+                <div class="precalc-amount">50,000 TK</div>
+                <div class="precalc-req">...</div>
             </div>
-        </div>
-
-        <div class="remitly-banner">
-            <img src="remitly.png" alt="Remitly Logo" class="remitly-logo">
-            <div class="remitly-text">
-                Sign up for Remitly using my referral link to get <strong>50 RON off</strong> on your first money
-                transfer of 500 RON or more.
-            </div>
-            <a href="https://remit.ly/2n0wkpg8" target="_blank" class="remitly-cta">Get 50 RON Off</a>
         </div>
     </div>
 
     <!-- Results Modal -->
-    <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-overlay" id="modal-overlay">
         <div class="modal">
             <div class="modal-icon">✓</div>
             <h3>Calculation Complete</h3>
 
             <div class="result-item">
                 <span class="result-label">Base Amount (Before Incentive)</span>
-                <span class="result-value" id="resBase">0.00 <small>TK</small></span>
+                <span class="result-value" id="res-base">0.00 <small>TK</small></span>
             </div>
 
-            <div class="result-item"
-                style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.3);">
-                <span class="result-label" style="color: var(--accent);">Government Incentive (+2.5%)</span>
-                <span class="result-value" style="color: var(--accent);" id="resIncentive">0.00 <small>TK</small></span>
+            <div class="result-item incentive">
+                <span class="result-label">Government Incentive (+2.5%)</span>
+                <span class="result-value" id="res-incentive">0.00 <small>TK</small></span>
             </div>
 
             <div class="result-item">
                 <span class="result-label">Final Amount Received in BD</span>
-                <span class="result-value" id="resBd">0.00 <small>TK</small></span>
+                <span class="result-value" id="res-total">0.00 <small>TK</small></span>
             </div>
 
-            <div class="result-item" style="position: relative;">
-                <span class="result-label">Amount you pay in LEU</span>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
-                    <span class="result-value" id="resLeu">0.00 <small>LEU</small></span>
-                    <button id="copyBtn" onclick="copyLeu()"
-                        style="width: auto; padding: 0.5rem 1rem; margin-top: 0; font-size: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: none;">
-                        Copy
-                    </button>
+            <div class="result-item">
+                <span class="result-label" id="res-send-label">Amount you pay in RON</span>
+                <div class="result-row">
+                    <span class="result-value" id="res-send">0.00 <small>RON</small></span>
+                    <button type="button" class="copy-btn" id="copy-btn" onclick="copySendAmount()">Copy</button>
                 </div>
             </div>
 
@@ -615,180 +538,214 @@
     </div>
 
     <script>
+        const INCENTIVE = 0.025; // 2.5% Bangladesh government incentive
+        const RATE_API = 'https://api.exchangerate-api.com/v4/latest/';
+        const POPULAR = ['RON', 'EUR', 'USD', 'GBP', 'SAR', 'AED', 'QAR', 'KWD', 'OMR', 'BHD',
+            'MYR', 'SGD', 'CAD', 'AUD', 'JPY', 'KRW', 'CHF', 'SEK', 'NOK', 'DKK', 'PLN', 'HUF', 'CZK'];
+        const PRECALC_TK = [10000, 20000, 50000];
+        // In "send" mode, cards show round amounts worth roughly these TK values
+        const PRECALC_SEND_TARGETS_TK = [3000, 10000, 25000];
+
+        const $ = (id) => document.getElementById(id);
+        const rateCache = {};
         let isReverseMode = false;
         let manualRateSet = false;
-        const precalcAmountsTk = [10000, 20000, 50000];
-        const precalcAmountsLeu = [100, 400, 1000];
+        let currency = 'RON';
+        let sendAmountToCopy = '';
+        try { currency = localStorage.getItem('remitbd-currency') || 'RON'; } catch (e) { }
+
+        const currencyName = (() => {
+            try {
+                const names = new Intl.DisplayNames(['en'], { type: 'currency' });
+                return (code) => { try { return names.of(code); } catch (e) { return code; } };
+            } catch (e) { return (code) => code; }
+        })();
+
+        // Accepts "25,5" or "25.5"
+        function parseNumber(value) {
+            return value ? parseFloat(value.trim().replace(/,/g, '.')) : NaN;
+        }
+
+        // Round to a friendly number (1, 2, 5 x 10^n) for the quick cards
+        function niceRound(x) {
+            if (!(x > 0)) return 0;
+            const pow = Math.pow(10, Math.floor(Math.log10(x)));
+            const n = x / pow;
+            const step = n < 1.5 ? 1 : n < 3.5 ? 2 : n < 7.5 ? 5 : 10;
+            return Math.max(1, step * pow);
+        }
+
+        function formatRate(rate) {
+            return rate >= 10 ? rate.toFixed(2) : rate.toFixed(4);
+        }
+
+        function setIndicator(text, state) {
+            const indicator = $('rate-indicator');
+            indicator.textContent = text;
+            indicator.className = 'rate-indicator' + (state ? ' ' + state : '');
+        }
+
+        // Briefly swap an element's text to "Copied!" after copying
+        function copyText(text, el, resetText, className) {
+            navigator.clipboard.writeText(text).then(() => {
+                el.textContent = 'Copied!';
+                if (className) el.classList.add(className);
+                setTimeout(() => {
+                    el.textContent = resetText;
+                    if (className) el.classList.remove(className);
+                }, 1500);
+            });
+        }
+
+        function fillCurrencyOptions(codes) {
+            const list = codes.filter(c => c !== 'BDT');
+            const popular = POPULAR.filter(c => list.includes(c));
+            const rest = list.filter(c => !popular.includes(c)).sort();
+            if (!list.includes(currency)) currency = 'RON';
+
+            const makeGroup = (label, items) => {
+                const group = document.createElement('optgroup');
+                group.label = label;
+                items.forEach(code => group.appendChild(new Option(`${code} — ${currencyName(code)}`, code)));
+                return group;
+            };
+
+            const select = $('currency');
+            select.innerHTML = '';
+            select.appendChild(makeGroup('Popular', popular));
+            if (rest.length) select.appendChild(makeGroup('All currencies', rest));
+            select.value = currency;
+        }
+
+        function updateCurrencyLabels() {
+            $('rate-label').textContent = `Exchange Rate (1 ${currency} = ? TK)`;
+            $('res-send-label').textContent = `Amount you pay in ${currency}`;
+            $('amount-label').textContent = isReverseMode ? `Send amount (${currency})` : 'Target amount (TK)';
+        }
+
+        function onCurrencyChange() {
+            currency = $('currency').value;
+            try { localStorage.setItem('remitbd-currency', currency); } catch (e) { }
+            manualRateSet = false;
+            updateCurrencyLabels();
+            fetchExchangeRate();
+        }
 
         function toggleMode() {
             isReverseMode = !isReverseMode;
-            const label = document.getElementById('amount-label');
-            const input = document.getElementById('amount');
-
-            if (isReverseMode) {
-                label.textContent = "Send amount (LEU)";
-                input.placeholder = "e.g. 1000";
-            } else {
-                label.textContent = "Target amount (TK)";
-                input.placeholder = "e.g. 10000";
-            }
-
-            const rateInput = document.getElementById('rate');
-            if (rateInput.value) {
-                updatePrecalcCards(rateInput.value);
-            }
+            $('amount').placeholder = isReverseMode ? 'e.g. 1000' : 'e.g. 10000';
+            updateCurrencyLabels();
+            updatePrecalcCards(parseNumber($('rate').value));
         }
 
         async function fetchExchangeRate() {
-            const indicator = document.getElementById('rate-indicator');
-            const rateInput = document.getElementById('rate');
+            const code = currency;
+
+            if (!manualRateSet) {
+                $('rate').value = '';
+                updatePrecalcCards(NaN);
+                setIndicator('Fetching live rate...');
+            }
 
             try {
-                const response = await fetch('https://api.exchangerate-api.com/v4/latest/RON');
-                if (!response.ok) throw new Error('API error');
-
-                const data = await response.json();
-                const rate = data.rates.BDT;
-
-                if (rate) {
-                    if (!manualRateSet) {
-                        rateInput.value = rate.toFixed(2);
-                        indicator.textContent = "Live rate fetched automatically";
-                        indicator.style.color = "var(--accent)";
-                        updatePrecalcCards(rate);
-                    }
-                } else {
-                    throw new Error("BDT rate not found");
+                let data = rateCache[code];
+                if (!data) {
+                    const response = await fetch(RATE_API + code);
+                    if (!response.ok) throw new Error('API error');
+                    data = await response.json();
+                    rateCache[code] = data;
                 }
+                // First successful response gives us the full currency list
+                if ($('currency').options.length <= POPULAR.length) {
+                    fillCurrencyOptions(Object.keys(data.rates));
+                }
+                if (code !== currency || manualRateSet) return; // user moved on while loading
+
+                const rate = data.rates.BDT;
+                if (!rate) throw new Error('BDT rate not found');
+                $('rate').value = formatRate(rate);
+                setIndicator(`Live rate: 1 ${code} = ${formatRate(rate)} TK`, 'live');
+                updatePrecalcCards(rate);
             } catch (error) {
-                if (!manualRateSet) {
-                    indicator.textContent = "Failed to fetch live rate, please enter manually";
-                    indicator.style.color = "#ef4444";
+                if (code === currency && !manualRateSet) {
+                    setIndicator('Failed to fetch live rate, please enter manually', 'error');
                 }
             }
         }
 
         function updatePrecalcCards(rate) {
-            const parsedRate = parseFloat(rate);
-            if (isNaN(parsedRate) || parsedRate <= 0) {
-                document.getElementById('precalc-req-1').textContent = "...";
-                document.getElementById('precalc-req-2').textContent = "...";
-                document.getElementById('precalc-req-3').textContent = "...";
+            const cards = document.querySelectorAll('.precalc-card');
+            const valid = rate > 0;
+
+            cards.forEach((card, i) => {
+                const amountEl = card.querySelector('.precalc-amount');
+                const reqEl = card.querySelector('.precalc-req');
+
+                if (!isReverseMode) {
+                    const tk = PRECALC_TK[i];
+                    amountEl.textContent = `${tk.toLocaleString()} TK`;
+                    reqEl.textContent = valid ? `${(tk / (1 + INCENTIVE) / rate).toFixed(2)} ${currency}` : '...';
+                } else if (valid) {
+                    const send = niceRound(PRECALC_SEND_TARGETS_TK[i] / rate);
+                    amountEl.textContent = `${send.toLocaleString()} ${currency}`;
+                    reqEl.textContent = `${(send * rate * (1 + INCENTIVE)).toFixed(2)} TK`;
+                } else {
+                    reqEl.textContent = '...';
+                }
+            });
+        }
+
+        function calculate() {
+            const input = parseNumber($('amount').value);
+            const rate = parseNumber($('rate').value);
+
+            if (!(input > 0) || !(rate > 0)) {
+                alert('Please enter valid positive numbers for both fields.');
                 return;
             }
 
-            if (!isReverseMode) {
-                precalcAmountsTk.forEach((amount, index) => {
-                    const bdAmountBase = (amount * 100) / 102.5;
-                    const leuAmount = bdAmountBase / parsedRate;
-                    document.getElementById(`precalc-amt-${index + 1}`).textContent = `${amount.toLocaleString()} TK`;
-                    document.getElementById(`precalc-req-${index + 1}`).textContent = `${leuAmount.toFixed(2)} LEU`;
-                });
-            } else {
-                precalcAmountsLeu.forEach((amount, index) => {
-                    const bdAmountBase = amount * parsedRate;
-                    const bdAmountTotal = bdAmountBase * 1.025;
-                    document.getElementById(`precalc-amt-${index + 1}`).textContent = `${amount.toLocaleString()} LEU`;
-                    document.getElementById(`precalc-req-${index + 1}`).textContent = `${bdAmountTotal.toFixed(2)} TK`;
-                });
+            // Target mode: input is TK to receive. Send mode: input is amount sent.
+            const sendAmount = isReverseMode ? input : input / (1 + INCENTIVE) / rate;
+            const base = sendAmount * rate;
+            const total = base * (1 + INCENTIVE);
+
+            sendAmountToCopy = sendAmount.toFixed(2);
+            $('res-base').innerHTML = `${base.toFixed(2)} <small>TK</small>`;
+            $('res-incentive').innerHTML = `${(total - base).toFixed(2)} <small>TK</small>`;
+            $('res-total').innerHTML = `${total.toFixed(2)} <small>TK</small>`;
+            $('res-send').innerHTML = `${sendAmountToCopy} <small>${currency}</small>`;
+
+            $('modal-overlay').classList.add('active');
+        }
+
+        function closeModal() {
+            $('modal-overlay').classList.remove('active');
+        }
+
+        function copySendAmount() {
+            copyText(sendAmountToCopy, $('copy-btn'), 'Copy', 'copied');
+        }
+
+        function copyPrecalc(card) {
+            const reqEl = card.querySelector('.precalc-req');
+            const value = reqEl.textContent.split(' ')[0];
+            if (value && value !== '...' && value !== 'Copied!') {
+                copyText(value, reqEl, reqEl.textContent, 'copied');
             }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            fillCurrencyOptions(POPULAR);
+            updateCurrencyLabels();
             fetchExchangeRate();
 
-            document.getElementById('rate').addEventListener('input', (e) => {
+            $('rate').addEventListener('input', (e) => {
                 manualRateSet = true;
-                const val = e.target.value.replace(/,/g, '.');
-                updatePrecalcCards(val);
-                const indicator = document.getElementById('rate-indicator');
-                indicator.textContent = "Manual rate applied";
-                indicator.style.color = "white";
+                updatePrecalcCards(parseNumber(e.target.value));
+                setIndicator('Manual rate applied', 'manual');
             });
         });
 
-        function calculate() {
-            const amountInput = document.getElementById('amount');
-            const rateInput = document.getElementById('rate');
-
-            const parseValue = (val) => {
-                if (!val) return NaN;
-                // Trim whitespace and replace all commas with dots
-                const normalized = val.trim().replace(/,/g, '.');
-                return parseFloat(normalized);
-            };
-
-            const inputValue = parseValue(amountInput.value);
-            const exchangeRate = parseValue(rateInput.value);
-
-            if (isNaN(inputValue) || isNaN(exchangeRate) || inputValue <= 0 || exchangeRate <= 0) {
-                alert("Please enter valid positive numbers for both fields.");
-                return;
-            }
-
-            let bdAmountBase, incentive, moneyAmountTk, leuAmount;
-
-            if (!isReverseMode) {
-                // Mode 1: Input is Target TK
-                moneyAmountTk = inputValue;
-                bdAmountBase = (moneyAmountTk * 100) / 102.5;
-                incentive = moneyAmountTk - bdAmountBase;
-                leuAmount = bdAmountBase / exchangeRate;
-            } else {
-                // Mode 2: Input is Send LEU
-                leuAmount = inputValue;
-                bdAmountBase = leuAmount * exchangeRate;
-                moneyAmountTk = bdAmountBase * 1.025;
-                incentive = moneyAmountTk - bdAmountBase;
-            }
-
-            // Update UI
-            document.getElementById('resBase').innerHTML = `${bdAmountBase.toFixed(2)} <small>TK</small>`;
-            document.getElementById('resIncentive').innerHTML = `${incentive.toFixed(2)} <small>TK</small>`;
-            document.getElementById('resBd').innerHTML = `${moneyAmountTk.toFixed(2)} <small>TK</small>`;
-            document.getElementById('resLeu').innerHTML = `${leuAmount.toFixed(2)} <small>LEU</small>`;
-
-            // Show Modal
-            document.getElementById('modalOverlay').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-            const btn = document.getElementById('copyBtn');
-            btn.innerText = "Copy";
-            btn.style.background = "rgba(255,255,255,0.05)";
-        }
-
-        function copyLeu() {
-            const leuValue = document.getElementById('resLeu').innerText.split(' ')[0];
-            navigator.clipboard.writeText(leuValue).then(() => {
-                const btn = document.getElementById('copyBtn');
-                btn.innerText = "Copied!";
-                btn.style.background = "var(--accent)";
-                setTimeout(() => {
-                    btn.innerText = "Copy";
-                    btn.style.background = "rgba(255,255,255,0.05)";
-                }, 2000);
-            });
-        }
-
-        function copyPrecalc(element) {
-            const reqDiv = element.querySelector('.precalc-req');
-            const value = reqDiv.textContent.split(' ')[0];
-            if (value && value !== "...") {
-                navigator.clipboard.writeText(value).then(() => {
-                    const originalText = reqDiv.textContent;
-                    reqDiv.textContent = "Copied!";
-                    reqDiv.style.color = "white";
-                    setTimeout(() => {
-                        reqDiv.textContent = originalText;
-                        reqDiv.style.color = "var(--accent)";
-                    }, 1500);
-                });
-            }
-        }
-
-        // Close on escape key
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
