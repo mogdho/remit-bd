@@ -6,7 +6,7 @@ A fast, open-source calculator for money sent to Bangladesh (BDT) from any curre
 
 ### 🚀 Core Features
 
-* **Any Currency to BDT:** Choose your send currency from the list; popular remittance currencies are at the top. Your choice is remembered.
+* **Any Currency to BDT:** Pick your send currency from a searchable list — type a code, currency or country (e.g. "euro", "dubai", "saudi"). Popular remittance currencies are at the top. Your choice is remembered.
 * **Live Exchange Rates:** The latest rate to BDT is fetched automatically (ExchangeRate API). You can also type your own rate.
 * **Incentive Calculation:** Computes the 2.5% government incentive for legal remittance channels.
 * **Two Modes:** Switch between "how much TK should arrive" and "how much I'm sending".

@@ -4,7 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BD Remittance Calculator | Premium Edition</title>
+    <title>Remit BD – Remittance Calculator to Bangladesh with 2.5% Incentive</title>
+    <meta name="description"
+        content="Free remittance calculator for sending money to Bangladesh. Convert EUR, USD, GBP, RON, SAR, AED and 160+ currencies to Taka (BDT) with live rates and the 2.5% government incentive.">
+    <link rel="canonical" href="https://remitbd.mogdhopaul.com/">
+    <meta name="theme-color" content="#0F172A">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://remitbd.mogdhopaul.com/">
+    <meta property="og:title" content="Remit BD – Remittance Calculator to Bangladesh">
+    <meta property="og:description"
+        content="See exactly how much Taka your family receives, including the 2.5% government incentive. Live rates for 160+ currencies.">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -97,10 +108,18 @@
             }
         }
 
-        .container {
+        /* Calculator + FAQ column */
+        .page {
             width: 100%;
             max-width: 450px;
             margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
             padding: 2rem;
             background: var(--panel-bg);
             border: 1px solid var(--glass-border);
@@ -116,8 +135,20 @@
                 padding: 0;
             }
 
-            .container {
+            .page {
                 max-width: none;
+                gap: 0;
+            }
+
+            .faq {
+                padding: 2rem 1.25rem;
+                padding-bottom: max(2rem, env(safe-area-inset-bottom));
+                border: none;
+                border-top: 1px solid var(--glass-border);
+                border-radius: 0;
+            }
+
+            .container {
                 min-height: 100vh;
                 min-height: 100dvh;
                 margin: 0;
@@ -143,10 +174,92 @@
             }
         }
 
-        h2 {
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.5);
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 2rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+        }
+
+        .faq h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .faq details {
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .faq details:last-of-type {
+            border-bottom: none;
+        }
+
+        .faq summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 0;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .faq summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq summary::after {
+            content: "+";
+            flex-shrink: 0;
+            font-size: 1.25rem;
+            line-height: 1;
+            color: var(--accent);
+        }
+
+        .faq details[open] summary::after {
+            content: "−";
+        }
+
+        .faq summary h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: white;
+        }
+
+        .faq summary:hover h3 {
+            color: var(--accent);
+        }
+
+        .faq .answer {
+            padding-bottom: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.65;
+            color: var(--text-muted);
+        }
+
+        .brand h1 {
             font-size: 1.75rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
             text-align: center;
             background: linear-gradient(to right, #fff, #94a3b8);
             -webkit-background-clip: text;
@@ -185,8 +298,7 @@
             margin-bottom: 0;
         }
 
-        .input-group input,
-        .input-group select {
+        .input-group input {
             width: 100%;
             padding: 1rem;
             background: rgba(0, 0, 0, 0.2);
@@ -198,20 +310,118 @@
             outline: none;
         }
 
-        .input-group select {
-            cursor: pointer;
-        }
-
-        .input-group select option {
-            background: var(--panel-bg);
-            color: white;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
+        .input-group input:focus {
             border-color: var(--primary);
             background: rgba(0, 0, 0, 0.3);
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Searchable currency picker */
+        .currency-picker {
+            position: relative;
+        }
+
+        .currency-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-top: 0;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            font-weight: 500;
+            text-align: left;
+            box-shadow: none;
+        }
+
+        .currency-btn:hover,
+        .currency-btn[aria-expanded="true"] {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+            transform: none;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .currency-btn svg {
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .currency-btn[aria-expanded="true"] svg {
+            transform: rotate(180deg);
+        }
+
+        .currency-panel {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            z-index: 20;
+            padding: 0.5rem;
+            background: #243146;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        .currency-panel[hidden] {
+            display: none;
+        }
+
+        .input-group .currency-search {
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .currency-list {
+            list-style: none;
+            max-height: 260px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+        }
+
+        .currency-group {
+            padding: 0.5rem 0.75rem 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .currency-option {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .currency-option .code {
+            width: 2.75rem;
+            flex-shrink: 0;
+            font-weight: 700;
+            color: white;
+        }
+
+        .currency-option .name {
+            color: var(--text-muted);
+        }
+
+        .currency-option.active {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .currency-option[aria-selected="true"] .code {
+            color: var(--accent);
+        }
+
+        .currency-empty {
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-align: center;
         }
 
         .rate-indicator {
@@ -472,6 +682,86 @@
             box-shadow: none;
         }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the 2.5% government incentive on remittance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Government of Bangladesh pays a 2.5% cash incentive on money that expatriates send home through legal channels. It is added on top of the converted amount, so if your transfer is worth 10,000 TK, your family receives 10,250 TK. The receiving bank or mobile wallet credits it automatically, so you do not need to apply for it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I calculate how much Taka my family will receive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Choose your send currency, tap Switch to use \"Send amount\" mode and enter how much you are sending. The live exchange rate fills in automatically. Press Process Calculation to see the base amount, the 2.5% incentive and the final amount received in Bangladesh."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much do I need to send for my family to receive a specific amount?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Keep the calculator in \"Target amount (TK)\" mode, enter the Taka amount you want to arrive (for example 50,000 TK) and press Process Calculation. The calculator works backwards, taking the 2.5% incentive into account, and shows exactly how much you need to pay in your currency. The quick cards show this for 10,000, 20,000 and 50,000 TK."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which currencies does Remit BD support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "More than 160 currencies, including the Euro (EUR), US Dollar (USD), British Pound (GBP), Romanian Leu (RON), Saudi Riyal (SAR), UAE Dirham (AED), Qatari Riyal (QAR), Kuwaiti Dinar (KWD), Omani Rial (OMR), Malaysian Ringgit (MYR) and Singapore Dollar (SGD). Use the search box to find your currency by name, code or country."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this the same exchange rate my bank or money transfer app will give me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not exactly. Remit BD shows the live market rate, while banks and transfer apps usually offer a slightly lower rate and may charge a fee. For the most accurate result, check the rate in your provider's app and type it into the Exchange Rate field. The calculator will then use your rate."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which sending methods qualify for the incentive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Money sent through formal channels qualifies: banks, licensed money transfer services and exchange houses, with the money received into a Bangladeshi bank account or a mobile financial service such as bKash, Nagad or Rocket. Money sent through informal channels like hundi or hawala does not get the incentive and is illegal in Bangladesh."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need documents to receive the incentive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Small and regular transfers usually receive the incentive without any paperwork. For larger amounts, the bank in Bangladesh may ask for documents such as proof of income or employment abroad. These limits are set by Bangladesh Bank and can change, so check with the receiving bank before sending a large amount."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the calculator include transfer fees?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Remit BD calculates the converted amount and the government incentive only. Fees differ between providers: some charge a fixed fee, others build the cost into the exchange rate. Add your provider's fee to the amount you pay."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Remit BD free, and is my data safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, it is completely free. All calculations happen in your browser, and nothing you type is sent to a server or stored. The only thing remembered on your device is your chosen currency, so it is ready next time."
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 
 <body>
@@ -481,13 +771,33 @@
         <div class="blob blob-3"></div>
     </div>
 
+    <main class="page">
     <div class="container">
-        <h2>Remit BD</h2>
+        <div class="brand">
+            <img src="logo.svg" alt="" class="brand-logo" width="44" height="44">
+            <h1>Remit BD</h1>
+        </div>
         <p class="subtitle">Calculate money sent to Bangladesh from any currency, with government incentives.</p>
 
         <div class="input-group">
-            <label for="currency">Send currency</label>
-            <select id="currency" onchange="onCurrencyChange()"></select>
+            <label id="currency-label" for="currency-btn">Send currency</label>
+            <div class="currency-picker" id="currency-picker">
+                <button type="button" class="currency-btn" id="currency-btn" aria-haspopup="listbox"
+                    aria-expanded="false" onclick="togglePicker()">
+                    <span id="currency-btn-text">RON — Romanian Leu</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
+                </button>
+                <div class="currency-panel" id="currency-panel" hidden>
+                    <input type="text" id="currency-search" class="currency-search"
+                        placeholder="Search currency or country" autocomplete="off" spellcheck="false"
+                        role="combobox" aria-expanded="true" aria-controls="currency-list" aria-autocomplete="list"
+                        aria-label="Search currency or country">
+                    <ul class="currency-list" id="currency-list" role="listbox" aria-labelledby="currency-label"></ul>
+                </div>
+            </div>
         </div>
 
         <div class="input-group">
@@ -526,6 +836,47 @@
             </div>
         </div>
     </div>
+
+        <section class="faq" aria-labelledby="faq-title">
+            <h2 id="faq-title">Frequently Asked Questions</h2>
+            <details>
+                <summary><h3>What is the 2.5% government incentive on remittance?</h3></summary>
+                <p class="answer">The Government of Bangladesh pays a 2.5% cash incentive on money that expatriates send home through legal channels. It is added on top of the converted amount, so if your transfer is worth 10,000 TK, your family receives 10,250 TK. The receiving bank or mobile wallet credits it automatically, so you do not need to apply for it.</p>
+            </details>
+            <details>
+                <summary><h3>How do I calculate how much Taka my family will receive?</h3></summary>
+                <p class="answer">Choose your send currency, tap Switch to use &quot;Send amount&quot; mode and enter how much you are sending. The live exchange rate fills in automatically. Press Process Calculation to see the base amount, the 2.5% incentive and the final amount received in Bangladesh.</p>
+            </details>
+            <details>
+                <summary><h3>How much do I need to send for my family to receive a specific amount?</h3></summary>
+                <p class="answer">Keep the calculator in &quot;Target amount (TK)&quot; mode, enter the Taka amount you want to arrive (for example 50,000 TK) and press Process Calculation. The calculator works backwards, taking the 2.5% incentive into account, and shows exactly how much you need to pay in your currency. The quick cards show this for 10,000, 20,000 and 50,000 TK.</p>
+            </details>
+            <details>
+                <summary><h3>Which currencies does Remit BD support?</h3></summary>
+                <p class="answer">More than 160 currencies, including the Euro (EUR), US Dollar (USD), British Pound (GBP), Romanian Leu (RON), Saudi Riyal (SAR), UAE Dirham (AED), Qatari Riyal (QAR), Kuwaiti Dinar (KWD), Omani Rial (OMR), Malaysian Ringgit (MYR) and Singapore Dollar (SGD). Use the search box to find your currency by name, code or country.</p>
+            </details>
+            <details>
+                <summary><h3>Is this the same exchange rate my bank or money transfer app will give me?</h3></summary>
+                <p class="answer">Not exactly. Remit BD shows the live market rate, while banks and transfer apps usually offer a slightly lower rate and may charge a fee. For the most accurate result, check the rate in your provider&#x27;s app and type it into the Exchange Rate field. The calculator will then use your rate.</p>
+            </details>
+            <details>
+                <summary><h3>Which sending methods qualify for the incentive?</h3></summary>
+                <p class="answer">Money sent through formal channels qualifies: banks, licensed money transfer services and exchange houses, with the money received into a Bangladeshi bank account or a mobile financial service such as bKash, Nagad or Rocket. Money sent through informal channels like hundi or hawala does not get the incentive and is illegal in Bangladesh.</p>
+            </details>
+            <details>
+                <summary><h3>Do I need documents to receive the incentive?</h3></summary>
+                <p class="answer">Small and regular transfers usually receive the incentive without any paperwork. For larger amounts, the bank in Bangladesh may ask for documents such as proof of income or employment abroad. These limits are set by Bangladesh Bank and can change, so check with the receiving bank before sending a large amount.</p>
+            </details>
+            <details>
+                <summary><h3>Does the calculator include transfer fees?</h3></summary>
+                <p class="answer">No. Remit BD calculates the converted amount and the government incentive only. Fees differ between providers: some charge a fixed fee, others build the cost into the exchange rate. Add your provider&#x27;s fee to the amount you pay.</p>
+            </details>
+            <details>
+                <summary><h3>Is Remit BD free, and is my data safe?</h3></summary>
+                <p class="answer">Yes, it is completely free. All calculations happen in your browser, and nothing you type is sent to a server or stored. The only thing remembered on your device is your chosen currency, so it is ready next time.</p>
+            </details>
+        </section>
+    </main>
 
     <!-- Results Modal -->
     <div class="modal-overlay" id="modal-overlay">
@@ -620,38 +971,171 @@
             });
         }
 
-        function fillCurrencyOptions(codes) {
-            const list = codes.filter(c => c !== 'BDT');
-            const popular = POPULAR.filter(c => list.includes(c));
-            const rest = list.filter(c => !popular.includes(c)).sort();
-            if (!list.includes(currency)) currency = 'RON';
+        /* ---------- Currency picker ---------- */
 
-            const makeGroup = (label, items) => {
-                const group = document.createElement('optgroup');
-                group.label = label;
-                items.forEach(code => group.appendChild(new Option(`${code} — ${currencyName(code)}`, code)));
-                return group;
+        // Extra search words so people can type a country or city
+        const ALIASES = {
+            EUR: 'europe germany france italy spain portugal netherlands belgium austria greece ireland finland cyprus malta',
+            USD: 'usa america united states', GBP: 'uk britain england london sterling',
+            AED: 'uae dubai emirates abu dhabi', SAR: 'saudi ksa riyadh', QAR: 'qatar doha', KWD: 'kuwait',
+            OMR: 'oman muscat', BHD: 'bahrain', MYR: 'malaysia ringgit', SGD: 'singapore', RON: 'romania',
+            CAD: 'canada', AUD: 'australia', NZD: 'new zealand', JPY: 'japan', KRW: 'korea', CHF: 'switzerland swiss',
+            SEK: 'sweden', NOK: 'norway', DKK: 'denmark', PLN: 'poland', HUF: 'hungary', CZK: 'czech',
+            MVR: 'maldives', LBP: 'lebanon', JOD: 'jordan', IQD: 'iraq', LYD: 'libya', BND: 'brunei',
+            HKD: 'hong kong', CNY: 'china', INR: 'india', ZAR: 'south africa', TRY: 'turkey', RUB: 'russia',
+            MUR: 'mauritius', SCR: 'seychelles', EGP: 'egypt', ILS: 'israel'
+        };
+
+        let allCurrencies = POPULAR.slice();
+        let fullListLoaded = false;
+        let visibleCodes = [];
+        let activeIndex = -1;
+
+        function setCurrencyList(codes) {
+            allCurrencies = codes.filter(c => c !== 'BDT');
+            if (!allCurrencies.includes(currency)) currency = 'RON';
+            updateCurrencyButton();
+            if (!$('currency-panel').hidden) renderCurrencyList();
+        }
+
+        function updateCurrencyButton() {
+            $('currency-btn-text').textContent = `${currency} — ${currencyName(currency)}`;
+        }
+
+        function searchText(code) {
+            return `${code} ${currencyName(code)} ${ALIASES[code] || ''}`.toLowerCase();
+        }
+
+        function renderCurrencyList() {
+            const query = $('currency-search').value.trim().toLowerCase();
+            const list = $('currency-list');
+            list.innerHTML = '';
+            visibleCodes = [];
+
+            const addHeader = (text) => {
+                const li = document.createElement('li');
+                li.className = 'currency-group';
+                li.setAttribute('role', 'presentation');
+                li.textContent = text;
+                list.appendChild(li);
             };
 
-            const select = $('currency');
-            select.innerHTML = '';
-            select.appendChild(makeGroup('Popular', popular));
-            if (rest.length) select.appendChild(makeGroup('All currencies', rest));
-            select.value = currency;
+            const addOption = (code) => {
+                const li = document.createElement('li');
+                li.id = `currency-opt-${code}`;
+                li.className = 'currency-option';
+                li.setAttribute('role', 'option');
+                li.setAttribute('aria-selected', code === currency);
+                const codeEl = document.createElement('span');
+                codeEl.className = 'code';
+                codeEl.textContent = code;
+                const nameEl = document.createElement('span');
+                nameEl.className = 'name';
+                nameEl.textContent = currencyName(code);
+                li.append(codeEl, nameEl);
+                li.addEventListener('mousedown', (e) => e.preventDefault()); // keep focus in search
+                li.addEventListener('click', () => selectCurrency(code));
+                list.appendChild(li);
+                visibleCodes.push(code);
+            };
+
+            if (!query) {
+                const popular = POPULAR.filter(c => allCurrencies.includes(c));
+                const rest = allCurrencies.filter(c => !popular.includes(c)).sort();
+                addHeader('Popular');
+                popular.forEach(addOption);
+                if (rest.length) {
+                    addHeader('All currencies');
+                    rest.forEach(addOption);
+                }
+                setActive(visibleCodes.indexOf(currency));
+                return;
+            }
+
+            // Codes starting with the query first, then popular ones (in popular order), then A-Z
+            const rank = (c) => (c.toLowerCase().startsWith(query) ? 0 : POPULAR.includes(c) ? 1 : 2);
+            const matches = allCurrencies
+                .filter(c => searchText(c).includes(query))
+                .sort((a, b) => rank(a) - rank(b)
+                    || (rank(a) === 1 ? POPULAR.indexOf(a) - POPULAR.indexOf(b) : a.localeCompare(b)));
+
+            if (!matches.length) {
+                const li = document.createElement('li');
+                li.className = 'currency-empty';
+                li.textContent = 'No currency found';
+                list.appendChild(li);
+            }
+            matches.forEach(addOption);
+            setActive(matches.length ? 0 : -1);
         }
+
+        function setActive(index) {
+            const options = $('currency-list').querySelectorAll('.currency-option');
+            options.forEach(o => o.classList.remove('active'));
+            activeIndex = index;
+            if (index < 0 || index >= options.length) {
+                $('currency-search').removeAttribute('aria-activedescendant');
+                return;
+            }
+            options[index].classList.add('active');
+            options[index].scrollIntoView({ block: 'nearest' });
+            $('currency-search').setAttribute('aria-activedescendant', options[index].id);
+        }
+
+        function openPicker() {
+            $('currency-panel').hidden = false;
+            $('currency-btn').setAttribute('aria-expanded', 'true');
+            $('currency-search').value = '';
+            renderCurrencyList();
+            $('currency-search').focus();
+        }
+
+        function closePicker(returnFocus) {
+            if ($('currency-panel').hidden) return;
+            $('currency-panel').hidden = true;
+            $('currency-btn').setAttribute('aria-expanded', 'false');
+            if (returnFocus) $('currency-btn').focus();
+        }
+
+        function togglePicker() {
+            if ($('currency-panel').hidden) openPicker();
+            else closePicker(true);
+        }
+
+        function onSearchKeydown(e) {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (!visibleCodes.length) return;
+                const step = e.key === 'ArrowDown' ? 1 : -1;
+                setActive(Math.min(Math.max(activeIndex + step, 0), visibleCodes.length - 1));
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (visibleCodes[activeIndex]) selectCurrency(visibleCodes[activeIndex]);
+            } else if (e.key === 'Escape') {
+                e.stopPropagation();
+                closePicker(true);
+            } else if (e.key === 'Tab') {
+                closePicker(false);
+            }
+        }
+
+        function selectCurrency(code) {
+            closePicker(true);
+            if (code === currency) return;
+            currency = code;
+            try { localStorage.setItem('remitbd-currency', currency); } catch (e) { }
+            manualRateSet = false;
+            updateCurrencyButton();
+            updateCurrencyLabels();
+            fetchExchangeRate();
+        }
+
+        /* ---------- Calculator ---------- */
 
         function updateCurrencyLabels() {
             $('rate-label').textContent = `Exchange Rate (1 ${currency} = ? TK)`;
             $('res-send-label').textContent = `Amount you pay in ${currency}`;
             $('amount-label').textContent = isReverseMode ? `Send amount (${currency})` : 'Target amount (TK)';
-        }
-
-        function onCurrencyChange() {
-            currency = $('currency').value;
-            try { localStorage.setItem('remitbd-currency', currency); } catch (e) { }
-            manualRateSet = false;
-            updateCurrencyLabels();
-            fetchExchangeRate();
         }
 
         function toggleMode() {
@@ -679,8 +1163,9 @@
                     rateCache[code] = data;
                 }
                 // First successful response gives us the full currency list
-                if ($('currency').options.length <= POPULAR.length) {
-                    fillCurrencyOptions(Object.keys(data.rates));
+                if (!fullListLoaded) {
+                    fullListLoaded = true;
+                    setCurrencyList(Object.keys(data.rates));
                 }
                 if (code !== currency || manualRateSet) return; // user moved on while loading
 
@@ -758,9 +1243,22 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            fillCurrencyOptions(POPULAR);
+            if (!allCurrencies.includes(currency)) allCurrencies.push(currency); // remembered rare currency
+            updateCurrencyButton();
             updateCurrencyLabels();
             fetchExchangeRate();
+
+            $('currency-search').addEventListener('input', renderCurrencyList);
+            $('currency-search').addEventListener('keydown', onSearchKeydown);
+            $('currency-btn').addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    openPicker();
+                }
+            });
+            document.addEventListener('click', (e) => {
+                if (!$('currency-picker').contains(e.target)) closePicker(false);
+            });
 
             $('rate').addEventListener('input', (e) => {
                 manualRateSet = true;
